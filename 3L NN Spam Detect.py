@@ -3,7 +3,7 @@ import numpy as np
 import random
 import csv
 
-with open('/Volumes/Transcend/Google Drive/PhD @ ISU/EE 526 X/spambase/spambase.data', 'rb') as f:
+with open('/Volumes/Transcend/GitHub/DeepLearningPractice/spambase/spambase.data', 'rb') as f:
     reader = csv.reader(f)
     data = list(reader)
 
@@ -22,6 +22,6 @@ test_data = zip(test_inputs, test_results)
 
 net = Network_Define.Network([57, 5, 3, 1])
 
-net.SGD(training_data, 100, 20,0.005, test_data=test_data) #epochs, mini_batch_size, eta
+net.SGD(training_data, 20, 10, 0.005, test_data=test_data) #epochs, mini_batch_size, eta
 
 

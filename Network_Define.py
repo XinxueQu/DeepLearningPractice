@@ -13,13 +13,12 @@ class Network(object):
     def feedforward(self, a):
         """Return the output of the network if "a" is input."""
         params = zip(self.biases, self.weights)
+        a = a.astype(float)
         for b, w in params[:-1]:
             w = w.astype(float)
-            a = a.astype(float)
             a = ReLU(np.dot(w, a) + b)
         b, w = params[-1]
         w = w.astype(float)
-        a = a.astype(float)
         a = sigmoid(np.dot(w, a) + b)
         return a
 
@@ -98,20 +97,15 @@ class Network(object):
 
 
 def sigmoid(z):
-    """The sigmoid function."""
-    return 1.0/(1.0+np.exp(-z))
+    return (1.0/(1.0+np.exp(-z)))
 
-def ReLU (x,epsilon=0.001):
-    result = np.maximum(x*epsilon,np.zeros((len(x),1)))
+def ReLU (x):
+    result = np.maximum(x*0.01,x)#np.zeros((len(x),1)))#Leaky ReLU
     return result
 
 def sigmoid_prime(z):
-    """Derivative of the sigmoid function."""
     return sigmoid(z)*(1-sigmoid(z))
 
-def ReLU_prime(z,epsilon=0.001):
-    """Derivative of the ReLU function."""
-    derivative=1.0 * (z > 0)
-    derivative[derivative == 0] = epsilon
-    #derivative=np.exp(z)/(1+np.exp(z))
+def ReLU_prime(z):
+    derivative=1.0 * (z > 0)#derivative[derivative == 0] = 0.01
     return derivative

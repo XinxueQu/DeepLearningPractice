@@ -11,7 +11,7 @@ class Network(object):
                         for x, y in zip(sizes[:-1], sizes[1:])]
 
     def feedforward(self, a):
-        """Return the output of the network if "a" is input."""
+        # Return the output of the network when a is input data.
         params = zip(self.biases, self.weights)
         a = a.astype(float)
         for b, w in params[:-1]:
@@ -23,8 +23,8 @@ class Network(object):
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,test_data=None):
-        """Train the neural network using mini-batch stochastic gradient descent.
-        The training_data is a list of tuples (x, y) representing the training inputs and the desired outputs."""
+        """Train the neural network using mini-batch SGD.
+        The training_data is a list of tuples (x, y) representing the training inputs and the true labels."""
         if test_data: n_test = len(test_data)
         n = len(training_data)
         for j in xrange(epochs):
@@ -38,10 +38,15 @@ class Network(object):
                 print "Epoch {0}: {1} / {2}".format(j, self.evaluate(test_data), n_test)
             else:
                 print "Epoch {0} complete".format(j)
+        training_error = 1.0 - self.evaluate(training_data)/float(n)
+        print "Training Error is {0}".format(training_error)
+        if test_data:
+            testing_error = 1.0 - self.evaluate(test_data) / float(n_test)
+            print "Training Error is {0}".format(testing_error)
 
     def update_mini_batch(self, mini_batch, eta):
-        """Update the network's weights and biases by applying gradient descent using backpropagation to a single mini batch.
-        The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta`` is the learning rate."""
+        """Update the network's weights and biases by applying gradient descent using backpropagation to each mini batch.
+        The mini_batch is a list of tuples (x, y), and eta is the learning rate."""
         gradient_b = [np.zeros(b.shape) for b in self.biases]
         gradient_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
@@ -55,21 +60,21 @@ class Network(object):
 
     def backprop(self, x, y):
         """Return gradient for weight and bias.
-        ``gradient_b`` and ``gradient_w`` are layer-by-layer lists of numpy arrays."""
+        gradient_b and gradient_w are layer-by-layer lists of numpy arrays."""
         gradient_b = [np.zeros(b.shape) for b in self.biases]
         gradient_w = [np.zeros(w.shape) for w in self.weights]
         # feedforward
         activation = x
         activations = [x]  # list to store all the activations, layer by layer
         zs = []  # list to store all the z vectors, layer by layer\
-        params=zip(self.biases, self.weights)
-        layer=1
+        params = zip(self.biases, self.weights)
+        layer = 1
         for b, w in params:
             w = w.astype(float)
             activation = activation.astype(float)
             z = np.dot(w, activation) + b
             zs.append(z)
-            if layer==len(params):
+            if layer == len(params):
                 activation = sigmoid(z)
             else:
                 activation = ReLU(z)
@@ -96,16 +101,16 @@ class Network(object):
         return sum(int(int(x) == int(y)) for (x, y) in test_results)
 
 
-def sigmoid(z):
-    return (1.0/(1.0+np.exp(-z)))
+def sigmoid(x):
+    return (1.0 / (1.0 + np.exp(-x)))
 
-def ReLU (x):
-    result = np.maximum(x*0.01,x)#np.zeros((len(x),1)))#Leaky ReLU
+def ReLU (x): #Since regular ReLU function lead to a lot NAN values, use Leaky ReLU here.
+    result = np.maximum(x*0.001,x)
     return result
 
-def sigmoid_prime(z):
-    return sigmoid(z)*(1-sigmoid(z))
+def sigmoid_prime(x):
+    return sigmoid(x)*(1-sigmoid(x))
 
-def ReLU_prime(z):
-    derivative=1.0 * (z > 0)#derivative[derivative == 0] = 0.01
+def ReLU_prime(x):
+    derivative=1.0 * (x > 0)
     return derivative

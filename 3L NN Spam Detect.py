@@ -2,6 +2,9 @@ import Network_Define
 import numpy as np
 import random
 import csv
+import time
+start_time = time.time()
+
 
 with open('/Volumes/Transcend/GitHub/DeepLearningPractice/spambase/spambase.data', 'rb') as f:
     reader = csv.reader(f)
@@ -24,4 +27,6 @@ test_data = zip(test_inputs, test_results)
 
 net = Network_Define.Network([57, 5, 3, 1]) # three layers network, with 57 features in inputs
 
-net.SGD(training_data, 30, 10, 0.0005, test_data=test_data) # epochs, mini_batch_size, learning rate
+net.SGD(training_data, 50, 10, 0.5, test_data=test_data) # train_data, epochs, mini_batch_size, learning rate, test_data
+
+print("--- %s seconds ---" % (time.time() - start_time))

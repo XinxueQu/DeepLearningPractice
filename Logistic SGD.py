@@ -40,7 +40,7 @@ trainX.insert(0,'Constant',np.ones(trainX.shape[0]))
 testX.insert(0,'Constant',np.ones(testX.shape[0]))
 
 coeff = np.zeros(nparam+1) # Initialize coefficient with 0s
-learning_rate = 5
+learning_rate = 20
 
 for epoch in range(2000):
     print ("round", epoch)
